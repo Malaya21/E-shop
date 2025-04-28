@@ -42,11 +42,20 @@ router.post('/login', async (req, res) => {
     if (userDetails) {
         req.session.user = userDetails;
         req.session.save(() => {
-            const userName = req.session.user.name;
-            res.render('index', { userName: userName });
+            req.flash('success', 'Login successful!');
+            
+            if (req.session.goToUrl) {
+                console.log('Redirecting to:', req.session.goToUrl);
+                
+                const redirectUrl = req.session.goToUrl;
+                req.session.goToUrl = null; // Clear the redirect URL after using it
+                return res.redirect(redirectUrl);
+            }
+            res.redirect('/');
         });
     } else {
-        res.status(404).send('User not available');
+        req.flash('error', 'Invalid email or password');
+        res.redirect('/user/login');
     }
 });
 
@@ -58,7 +67,7 @@ router.get('/logout', (req, res) => {
             return res.status(500).send('Logout error');
         }
         res.clearCookie('connect.sid');
-        res.render('index', { userName: null });
+       res.redirect('/')
     });
 });
 

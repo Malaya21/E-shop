@@ -17,10 +17,7 @@ const cartSchema = new Schema({
             required:true,
             default:1
         },
-        price:{
-            type:Number,
-            required:true
-        }
+       
     }],
     totalAmount:{
         type:Number,

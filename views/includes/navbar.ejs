@@ -1,39 +1,64 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <div class="container">
-      <a class="navbar-brand" href="/">E-Shop</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-          <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav ms-auto">
-              <li class="nav-item dropdown">
-                  <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                      <i class="fa-solid fa-circle-user"></i>
-                  </a>
-                  <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="#">Action</a></li>
-                    <li><a class="dropdown-item" href="#">Another action</a></li>
-                    <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item" href="#">Something else here</a></li>
-                  </ul>
-                </li>
-              <li class="nav-item">
-                  <a class="nav-link active" href="/">Home</a>
-              </li>
-              <li class="nav-item">
-                  <a class="nav-link" href="/cart">Cart</a>
-              </li>
-              <li class="nav-item">
-                  <a class="nav-link" href="/orders">Orders</a>
-              </li>
-          <li class="nav-item">
-              <a class="nav-link" href="/user/login">Login</a>
-          </li>
-          <li class="nav-item">
-              <a class="nav-link" href="/user/signup">Sign Up</a>
-          </li>
-              
+    <a class="navbar-brand" href="/"><i class="fa-solid fa-shop mx-3"></i>E-Shop</a>
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarNav"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item">
+          <a class="nav-link active" href="/"><i class="fa-solid fa-house mx-2"></i>Home</a>
+        </li>
+
+        <% if( typeof name !== 'undefined' && name !== 'Guest') { %>
+        <li class="nav-item dropdown">
+          <a
+            class="nav-link dropdown-toggle"
+            href="#"
+            role="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            <i class="fa-solid fa-circle-user"></i>
+          </a>
+          <ul class="dropdown-menu mr-3">
+            <li>
+              <a class="dropdown-item" href="/user/profile"
+                ><i class="fa-solid fa-user m-3"></i>Profile</a
+              >
+            </li>
+            <li><a class="dropdown-item" href="/wishlist"><i class="fa-solid fa-heart m-3"></i>Wishlist</a></li>
+            <% if (typeof role !== 'undefined' && role === 'admin') { %>
+
+            <li><a class="dropdown-item" href="/admin"><i class="fa-solid fa-lock-open mx-3"></i>Admin Dashboard</a></li>
+            <% } %>
+            <li><hr class="dropdown-divider" /></li>
+            <li><a class="dropdown-item" href="/user/logout"> <i class="fa-solid fa-right-from-bracket m-3"></i>Logout</a></li>
           </ul>
-      </div>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" href="/cart"><i class="fa-solid fa-cart-plus mx-2"></i>Cart</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/orders"><i class="fa-solid fa-basket-shopping mx-2"></i>Orders</a>
+        </li>
+        <% } else{%>
+        <li class="nav-item">
+          <a class="nav-link" href="/user/login"><i class="fa-solid fa-arrow-right-to-bracket mx-2"></i>Login</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" href="/user/signup"><i class="fa-solid fa-user-plus mx-2"></i>Sign Up</a>
+        </li>
+        <% } %>
+      </ul>
+    </div>
+    <% if (typeof role !== 'undefined' && role === 'admin') { %> <% } %>
   </div>
 </nav>
