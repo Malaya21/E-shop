@@ -1,0 +1,85 @@
+<% layout('layouts/adminboilerplate') %>
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+      <div class="card shadow-lg border-0">
+        <div class="card-header bg-primary text-white text-center">
+          <h2 class="mb-0">Add Product</h2>
+        </div>
+        <div class="card-body">
+          <form action="/admin/products/add" method="POST">
+            <div class="mb-3">
+              <label for="name" class="form-label">Product name</label>
+              <input
+                type="text"
+                class="form-control"
+                id="name"
+                name="name"
+                required
+              />
+            </div>
+            <div class="mb-3">
+              <label for="category" class="form-label">Category</label>
+              <select
+                class="form-select"
+                id="category"
+                name="category"
+                required
+              >
+                <option value="">Select Category</option>
+                <option value="electronics">Electronics</option>
+                <option value="clothing">Clothing</option>
+                <option value="books">Books</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="price" class="form-label">Price ($)</label>
+              <input
+                type="number"
+                class="form-control"
+                id="price"
+                name="price"
+                step="0.01"
+                required
+              />
+            </div>
+            <div class="mb-3">
+              <label for="stock" class="form-label">Quantity</label>
+              <input
+                type="number"
+                class="form-control"
+                id="stock"
+                name="stock"
+                step="0.01"
+                required
+              />
+            </div>
+            <div class="mb-3">
+              <label for="description" class="form-label">Description</label>
+              <textarea
+                class="form-control"
+                id="description"
+                name="description"
+                rows="3"
+                required
+              ></textarea>
+            </div>
+            <div class="mb-3">
+              <label for="image" class="form-label">Product Image</label>
+              <input class="form-control" type="text" id="image" name="image" />
+            </div>
+            <div class="d-flex justify-content-between">
+              <button type="submit" class="btn btn-primary px-4">
+                Add Product
+              </button>
+              <a href="/admin/products" class="btn btn-outline-secondary px-4"
+                >Cancel</a
+              >
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

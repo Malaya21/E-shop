@@ -1,0 +1,220 @@
+<% layout('layouts/boilerplate') %>
+
+<div class="container py-5">
+    <div class="row">
+        <!-- Product Images -->
+        <div class="col-md-6">
+            <div class="card border-0">
+                <div class="position-relative">
+                    <img src="<%= product.image %>" class="card-img-top rounded" alt="<%= product.name %>" 
+                         style="height: 400px; object-fit: cover;">
+                    <% if (product.stock <= 5 && product.stock > 0) { %>
+                        <span class="position-absolute top-0 end-0 badge bg-warning m-2">Low Stock</span>
+                    <% } %>
+                </div>
+                <div class="d-flex gap-2 mt-3">
+                    <img src="<%= product.image %>" class="img-thumbnail" style="width: 80px; height: 80px; object-fit: cover; cursor: pointer;" 
+                         onclick="changeMainImage(this.src)">
+                    <!-- Additional thumbnails can be added here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Product Info -->
+        <div class="col-md-6">
+            <div class="card border-0">
+                <div class="card-body">
+                    <h1 class="card-title mb-3"><%= product.name %></h1>
+                    
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="h3 mb-0">$<%= product.price.toFixed(2) %></div>
+                        <span class="badge bg-<%= product.stock > 0 ? 'success' : 'danger' %> ms-3">
+                            <%= product.stock > 0 ? 'In Stock' : 'Out of Stock' %>
+                        </span>
+                    </div>
+
+                    <div class="mb-4">
+                        <h5 class="mb-2">Description</h5>
+                        <p class="text-muted"><%= product.description %></p>
+                    </div>
+
+                    <div class="mb-4">
+                        <h5 class="mb-2">Category</h5>
+                        <span class="badge bg-info"><%= product.category %></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <h5 class="mb-2">Specifications</h5>
+                        <ul class="list-unstyled">
+                            <li class="mb-2">
+                                <strong>Brand:</strong> <%= product.brand || 'Not specified' %>
+                            </li>
+                            <li class="mb-2">
+                                <strong>Model:</strong> <%= product.model || 'Not specified' %>
+                            </li>
+                            <li class="mb-2">
+                                <strong>Weight:</strong> <%= product.weight || 'Not specified' %>
+                            </li>
+                            <li class="mb-2">
+                                <strong>Dimensions:</strong> <%= product.dimensions || 'Not specified' %>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <% if (product.stock > 0) { %>
+                        <div class="d-flex align-items-center gap-3 mb-4">
+                            <div class="input-group" style="width: 150px;">
+                                <button class="btn btn-outline-secondary" type="button" onclick="updateQuantity(-1)">-</button>
+                                <input type="number" class="form-control text-center" id="quantity" value="1" min="1" max="<%= product.stock %>">
+                                <button class="btn btn-outline-secondary" type="button" onclick="updateQuantity(1)">+</button>
+                            </div>
+                            <div class="text-muted">
+                                <%= product.stock %> available
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-primary btn-lg" onclick="addToCart()">
+                                <i class="fas fa-shopping-cart me-2"></i>Add to Cart
+                            </button>
+                            <button class="btn btn-outline-primary btn-lg" onclick="addToWishlist()">
+                                <i class="fas fa-heart me-2"></i>Add to Wishlist
+                            </button>
+                        </div>
+                    <% } else { %>
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-circle me-2"></i>
+                            This product is currently out of stock. Please check back later.
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Related Products -->
+    <div class="mt-5">
+        <h3 class="mb-4">Related Products</h3>
+        <div class="row g-4" id="relatedProducts">
+            <!-- Related products will be loaded here -->
+        </div>
+    </div>
+</div>
+
+<script>
+// Change main product image
+function changeMainImage(src) {
+    document.querySelector('.card-img-top').src = src;
+}
+
+// Update quantity
+function updateQuantity(change) {
+    const input = document.getElementById('quantity');
+    const currentValue = parseInt(input.value);
+    const newValue = currentValue + change;
+    const maxValue = parseInt(input.max);
+    
+    if (newValue >= 1 && newValue <= maxValue) {
+        input.value = newValue;
+    }
+}
+
+// Add to cart
+function addToCart() {
+    const quantity = document.getElementById('quantity').value;
+    const productId = '<%= product._id %>';
+    
+    // Add your cart functionality here
+    console.log('Adding to cart:', { productId, quantity });
+}
+
+// Add to wishlist
+function addToWishlist() {
+    const productId = '<%= product._id %>';
+    
+    // Add your wishlist functionality here
+    console.log('Adding to wishlist:', productId);
+}
+
+// Load related products
+async function loadRelatedProducts() {
+    try {
+        const response = await fetch(`/products/api/<%= product._id %>`);
+        const relatedProducts = await response.json();
+        
+        const relatedProductsContainer = document.getElementById('relatedProducts');
+        relatedProductsContainer.innerHTML = relatedProducts.map(product => `
+            <div class="col-md-6 col-lg-4 col-xl-3">
+                <div class="card h-100">
+                    <img src="${product.image}" class="card-img-top" alt="${product.name}" 
+                         style="height: 200px; object-fit: cover;">
+                    <div class="card-body">
+                        <h5 class="card-title">${product.name}</h5>
+                        <p class="card-text text-muted small">${product.description}</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="h5 mb-0">$${product.price.toFixed(2)}</span>
+                            <span class="badge bg-${product.stock > 0 ? 'success' : 'danger'}">
+                                ${product.stock > 0 ? 'In Stock' : 'Out of Stock'}
+                            </span>
+                        </div>
+                        <div class="d-grid gap-2 mt-3">
+                            <a href="/products/${product._id}" class="btn btn-primary">
+                                View Details
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    } catch (error) {
+        console.error('Error loading related products:', error);
+    }
+}
+
+// Initial load
+document.addEventListener('DOMContentLoaded', loadRelatedProducts);
+</script>
+
+<style>
+.card {
+    transition: transform 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.card-img-top {
+    transition: transform 0.3s;
+}
+
+.card:hover .card-img-top {
+    transform: scale(1.05);
+}
+
+.img-thumbnail {
+    transition: all 0.2s;
+}
+
+.img-thumbnail:hover {
+    border-color: #0d6efd;
+    transform: scale(1.05);
+}
+
+.input-group button {
+    width: 40px;
+}
+
+#quantity {
+    -moz-appearance: textfield;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+#quantity::-webkit-outer-spin-button,
+#quantity::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+</style> 

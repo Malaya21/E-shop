@@ -1,0 +1,118 @@
+<% layout('layouts/adminboilerplate') %>
+
+<div class="container-fluid py-4">
+    <div class="row mb-4">
+        <div class="col">
+            <h2 class="mb-0">Order Management</h2>
+        </div>
+    </div>
+
+    <!-- Orders Table -->
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Customer</th>
+                            <th>Products</th>
+                            <th>Total Amount</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% orders.forEach(order => { %>
+                            <tr>
+                                <td><%= order._id %></td>
+                                <td><%= order.userId ? order.userId.name : 'Unknown' %></td>
+                                <td>
+                                    <button class="btn btn-sm btn-info" type="button" data-bs-toggle="collapse" data-bs-target="#products<%= order._id %>">
+                                        View Products (<%= order.products.length %>)
+                                    </button>
+                                    <div class="collapse mt-2" id="products<%= order._id %>">
+                                        <div class="card card-body">
+                                            <ul class="list-unstyled mb-0">
+                                                <% order.products.forEach(product => { %>
+                                                    <li><%= product.name %> - $<%= product.price ? product.price.toFixed(2) : '0.00' %></li>
+                                                <% }); %>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>$<%= order.totalAmount ? order.totalAmount.toFixed(2) : '0.00' %></td>
+                                <td>
+                                    <span class="badge 
+                                        <%= order.status === 'pending' ? 'bg-warning text-dark' : '' %>
+                                        <%= order.status === 'confirmed' ? 'bg-primary' : '' %>
+                                        <%= order.status === 'shipped' ? 'bg-info text-dark' : '' %>
+                                        <%= order.status === 'delivered' ? 'bg-success' : '' %>
+                                        <%= order.status === 'cancelled' ? 'bg-secondary' : '' %>">
+                                        <%= order.status || 'pending' %>
+                                    </span>
+                                </td>
+                                <td>
+                                <%= new Date(order.createdAt).toLocaleDateString('en-US', {
+                                    year: 'numeric',
+                                    month: 'long',
+                                    day: 'numeric'
+                                }) %>
+                                </td>
+                               <form action="/admin/orders" method="post" class="d-flex align-items-center">
+                                <td>
+                                    <input type="hidden" name="orderId" value="<%= order._id %>">
+                                    <div class="input-group">
+                                        <select name="status" class="form-select" >
+                                            <option value="pending">Pending</option>
+                                            <option value="confirmed">Confirmed</option>
+                                            <option value="shipped">Shipped</option>
+                                            <option value="delivered">Delivered</option>
+                                            <option value="cancelled">Cancelled</option>
+                                        </select>
+                                        <button class="btn btn-sm btn-primary" type="submit">
+                                            Update 
+                                        </button>
+                                    </div>
+                                </td>
+                                </form>
+                            </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Update Order Status Modal -->
+<div class="modal fade" id="updateStatusModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Update Order Status</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="updateStatusForm">
+                    <input type="hidden" id="orderId" name="orderId">
+                    <div class="mb-3">
+                        <label class="form-label">Status</label>
+                        <select class="form-select" id="orderStatus" name="status" required>
+                            <option value="pending">Pending</option>
+                            <option value="confirmed">Confirmed</option>
+                            <option value="shipped">Shipped</option>
+                            <option value="delivered">Delivered</option>
+                            <option value="cancelled">Cancelled</option>
+                        </select>
+                    </div>
+                    <div class="text-end">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Update Status</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

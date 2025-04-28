@@ -1,0 +1,132 @@
+<% layout('layouts/boilerplate') %>
+
+<div class="container-fluid p-0">
+    <!-- Hero Section -->
+    <div class="hero-section position-relative">
+        <div class="hero-content text-center text-white position-absolute top-50 start-50 translate-middle">
+            <h1 class="display-4 fw-bold">
+                Welcome
+                <% if ( typeof userName !== 'undefined' && userName !== null ) { %>
+                    <%= userName %>
+                <% } %>
+                to E-Shop
+            </h1>
+            <p class="lead">Your one-stop destination for all your home needs</p>
+            <a href="/products" class="btn btn-primary btn-lg">Shop Now</a>
+        </div>
+    </div>
+
+    <!-- Featured Categories -->
+    <section class="py-5 text-white">
+        <div class="container">
+            <h2 class="text-center mb-4">Featured Categories</h2>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card h-100">
+                        <img src="https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f" class="card-img-top" alt="Electronics">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Electronics</h5>
+                            <a href="/products?category=electronics" class="btn btn-outline-primary">View Products</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100">
+                        <img src="https://images.unsplash.com/photo-1445205170230-053b83016050" class="card-img-top" alt="Furniture">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Furniture</h5>
+                            <a href="/products?category=clothing" class="btn btn-outline-primary">View Products</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100">
+                        <img src="https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f" class="card-img-top" alt="Decor">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Home Decor</h5>
+                            <a href="/products?category=books" class="btn btn-outline-primary">View Products</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Products -->
+    <section class="py-5 bg-light text-dark">
+        <div class="container">
+            <h2 class="text-center mb-4">Featured Products</h2>
+            <div class="row g-4">
+                <div class="col-md-3">
+                    <div class="card h-100">
+                        <img src="https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f" class="card-img-top" alt="Product 1">
+                        <div class="card-body">
+                            <h5 class="card-title">Smart TV</h5>
+                            <p class="card-text">4K Ultra HD Smart TV with HDR</p>
+                            <p class="card-text"><strong>$999.99</strong></p>
+                            <a href="/products/1" class="btn btn-primary">View Details</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card h-100">
+                        <img src="https://images.unsplash.com/photo-1445205170230-053b83016050" class="card-img-top" alt="Product 2">
+                        <div class="card-body">
+                            <h5 class="card-title">Sofa Set</h5>
+                            <p class="card-text">Modern 3-Piece Living Room Set</p>
+                            <p class="card-text"><strong>$799.99</strong></p>
+                            <a href="/products/2" class="btn btn-primary">View Details</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card h-100">
+                        <img src="https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f" class="card-img-top" alt="Product 3">
+                        <div class="card-body">
+                            <h5 class="card-title">Coffee Table</h5>
+                            <p class="card-text">Glass Top Modern Coffee Table</p>
+                            <p class="card-text"><strong>$299.99</strong></p>
+                            <a href="/products/3" class="btn btn-primary">View Details</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card h-100">
+                        <img src="https://images.unsplash.com/photo-1445205170230-053b83016050" class="card-img-top" alt="Product 4">
+                        <div class="card-body">
+                            <h5 class="card-title">Wall Art</h5>
+                            <p class="card-text">Abstract Canvas Wall Art</p>
+                            <p class="card-text"><strong>$149.99</strong></p>
+                            <a href="/products/4" class="btn btn-primary">View Details</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Special Offers -->
+    <section class="py-5 text-white">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h2 class="mb-4">Special Offers</h2>
+                    <p class="lead">Get up to 50% off on selected items</p>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Free shipping on orders over $100</li>
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i>30-day money-back guarantee</li>
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i>24/7 customer support</li>
+                    </ul>
+                    <a href="/products" class="btn btn-primary btn-lg mt-3">Shop Now</a>
+                </div>
+                <div class="col-md-6">
+                    <img src="https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f" class="img-fluid rounded" alt="Special Offers">
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+<style>
+  
+</style>
+
