@@ -70,5 +70,13 @@ router.get('/logout', (req, res) => {
        res.redirect('/')
     });
 });
+// Profile Route
+router.get('/profile', (req, res) => {
+    const user = req.session.user;
+    if (!user) {
+        return res.redirect('/user/login');
+    }
+    res.render('profile', { user });
+});
 
 module.exports = router;

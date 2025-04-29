@@ -3,8 +3,8 @@
     <div class="container mt-5 p-5">
         <div class="row g-4">
             <% products.forEach(product => { %>
-                <div class="col-md-3 d-flex align-items-stretch">
-                    <div class="card bg-dark text-white h-100 shadow-sm">
+                <div class="col-md-4 col-lg-3 col-sm-6 d-flex align-items-stretch">
+                    <div class="card  h-100 shadow-sm">
                         <img src="<%= product.image %>" loading="lazy"  width="300" height="300" class="card-img-top" alt="<%= product.name %>">
                         <div class="card-body d-flex flex-column">
                             <h5 class="card-title">
@@ -16,15 +16,18 @@
                             <a href="/products/<%= product._id %>" class="btn btn-primary mt-auto mb-2">
                                 <i class="fas fa-info-circle"></i> View Details
                             </a>
-                            <form action="/cart" method="post" class="d-inline">
+                            <form action="/cart" method="post" >
                                 <input type="hidden" name="productId" value="<%= product._id %>">
-                                <button type="submit" class="btn btn-secondary mt-auto mb-2">
+                                <button type="submit" class="btn btn-secondary w-100">
                                     <i class="fas fa-cart-plus"></i> Add to Cart
                                 </button>
                             </form>
-                            <button onclick="addToWishlist('<%= product._id %>')" class="btn btn-outline-light mt-auto wishlist-btn" id="wishlist-<%= product._id %>">
-                                <i class="fas fa-heart"></i> Add to Wishlist
-                            </button>
+                            <form action="/wishlist/add" method="post" class="mt-2">
+                                <input type="hidden" name="productId" value="<%= product._id %>">
+                                <button type="submit" class="btn  btn-outline-danger w-100 " >
+                                    <i class="fas fa-heart"></i> Add to Wishlist
+                                </button>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -32,72 +35,4 @@
         </div>
     </div>
 
-<script>
-    async function addToWishlist(productId) {
-        try {
-            const response = await fetch('/wishlist/add', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ productId })
-            });
-            
-            const data = await response.json();
-            
-            if (data.success) {
-                const button = document.getElementById(`wishlist-${productId}`);
-                button.innerHTML = '<i class="fas fa-heart text-danger"></i> Added to Wishlist';
-                button.disabled = true;
-                button.classList.remove('btn-outline-light');
-                button.classList.add('btn-outline-danger');
-                
-                // Show success message
-                const alertDiv = document.createElement('div');
-                alertDiv.className = 'alert alert-success alert-dismissible fade show position-fixed top-0 end-0 m-3';
-                alertDiv.innerHTML = `
-                    Product added to wishlist successfully!
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                `;
-                document.body.appendChild(alertDiv);
-                
-                // Remove alert after 3 seconds
-                setTimeout(() => {
-                    alertDiv.remove();
-                }, 3000);
-            } else {
-                throw new Error(data.error || 'Failed to add to wishlist');
-            }
-        } catch (error) {
-            console.error('Error:', error);
-            // Show error message
-            const alertDiv = document.createElement('div');
-            alertDiv.className = 'alert alert-danger alert-dismissible fade show position-fixed top-0 end-0 m-3';
-            alertDiv.innerHTML = `
-                ${error.message}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            `;
-            document.body.appendChild(alertDiv);
-            
-            // Remove alert after 3 seconds
-            setTimeout(() => {
-                alertDiv.remove();
-            }, 3000);
-        }
-    }
-</script>
-
-<style>
-    .wishlist-btn {
-        transition: all 0.3s ease;
-    }
-    
-    .wishlist-btn:hover {
-        transform: scale(1.05);
-    }
-    
-    .wishlist-btn:disabled {
-        opacity: 0.8;
-        cursor: not-allowed;
-    }
-</style>
+<
