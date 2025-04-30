@@ -1,0 +1,143 @@
+<% layout('layouts/boilerplate') %>
+
+<div class="container my-4">
+  <h1 class="mb-4 text-center">Your Orders</h1>
+
+  <% if (!orders || orders.length === 0) { %>
+  <div class="alert alert-info text-center">
+    <i class="fas fa-shopping-bag me-2"></i>You have no orders.
+  </div>
+  <% } else { %> <% orders.forEach(order => { %>
+  <div class="card mb-4 shadow-sm">
+    <div class="card-header <%= order.status === 'canceled' ? 'bg-danger' : 'bg-primary' %> text-white">
+      <div class="d-flex justify-content-between align-items-center flex-wrap">
+        <div class="order-id">
+          <strong>Order #<%= order._id.toString().slice(-6) %></strong>
+        </div>
+        <div class=""> <i class="fa-solid fa-map-location-dot mx-2"></i> : <%= order.address %></div>
+        <div class=""> <i class="fa-solid fa-wallet mx-2"></i> : <%= order.paymentMode %></div>
+        <div class=""> <i class="fa-solid fa-phone-volume"></i> : <%= phone%></div>
+        <div class="order-status">
+          <span class="badge <%= order.status === 'canceled' ? 'bg-light text-danger' : 'bg-light text-dark' %>">
+            <% if (order.status === 'canceled') { %>
+              <i class="fas fa-ban me-1"></i>
+            <% } else if (order.status === 'delivered') { %>
+              <i class="fas fa-check-circle me-1"></i>
+            <% } else { %>
+              <i class="fas fa-truck me-1"></i>
+            <% } %>
+            <%= order.status.charAt(0).toUpperCase() + order.status.slice(1) %>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <thead class="table-light">
+            <tr>
+              <th class="text-center">Product</th>
+              <th class="text-center">Price</th>
+              <th class="text-center">Quantity</th>
+              <th class="text-center">Subtotal</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% order.products.forEach(product => { %>
+            <tr>
+              <td class="align-middle">
+                <div class="d-flex align-items-center">
+                  <img
+                    src="<%= product.productId.image %>"
+                    class="img-thumbnail me-3"
+                    style="width: 60px; height: 60px; object-fit: cover"
+                    alt="<%= product.productId.name %>"
+                  />
+                  <span class="d-none d-md-inline"
+                    ><%= product.productId.name %></span
+                  >
+                </div>
+              </td>
+              <td class="align-middle text-center">₹ <%= product.price %></td>
+              <td class="align-middle text-center"><%= product.quantity %></td>
+              <td class="align-middle text-center">
+                ₹ <%= (product.price * product.quantity).toFixed(2) %>
+              </td>
+            </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="order-summary mt-4">
+        <div class="row g-3">
+          <div class="col-md-4">
+            <div class="card <%= order.status === 'canceled' ? 'bg-danger text-white' : 'bg-light' %>">
+              <div class="card-body text-center">
+                <h6 class="card-subtitle mb-2 <%= order.status === 'canceled' ? 'text-white' : 'text-muted' %>">Order Status</h6>
+                <p class="card-text">
+                  <% if (order.status === 'canceled') { %>
+                    <i class="fas fa-ban me-2"></i>
+                  <% } else if (order.status === 'delivered') { %>
+                    <i class="fas fa-check-circle me-2"></i>
+                  <% } else { %>
+                    <i class="fas fa-truck me-2"></i>
+                  <% } %>
+                  <%= order.status.charAt(0).toUpperCase() + order.status.slice(1) %>
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card bg-light">
+              <div class="card-body text-center">
+                <h6 class="card-subtitle mb-2 text-muted">Order Date</h6>
+                <p class="card-text">
+                  <i class="fas fa-calendar-alt me-2"></i>
+                  <%= new Date(order.createdAt).toLocaleDateString() %>
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card bg-light">
+              <div class="card-body text-center">
+                <h6 class="card-subtitle mb-2 text-muted">Total Amount</h6>
+                <p class="card-text">
+                  <i class="fas fa-rupee-sign me-2"></i>
+                  ₹ <%= order.totalAmount.toFixed(2) %>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-4 text-center">
+          <% if (order.status === 'delivered') { %>
+            <div class="alert alert-success">
+              <i class="fas fa-check-circle me-2"></i>Thank you for your purchase!
+            </div>
+          <% } else if (order.status === 'cancelled') { %>
+            <div class="alert alert-danger">
+              <i class="fas fa-ban me-2"></i>This order has been cancelled
+            </div>
+            <form action="/orders/delete" method="post">
+                <input type="hidden" name="orderId" value="<%= order._id %>">
+                <button type="submit" class="btn btn-danger">
+                    <i class="fas fa-trash me-2"></i>Delete Order
+                </button>
+            </form>
+          <% } else { %>
+            <form action="/orders/cancel" method="POST" class="d-inline-block">
+              <input type="hidden" name="orderId" value="<%= order._id %>">
+              <button type="submit" class="btn btn-danger">
+                <i class="fas fa-times-circle me-2"></i>Cancel Order
+              </button>
+            </form>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </div>
+  <% }) } %>
+</div>

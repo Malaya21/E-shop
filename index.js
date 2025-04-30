@@ -14,6 +14,7 @@ const flash = require('connect-flash');
 const {isLogin,isAdmin} = require('./middleware/isLogin');
 const cartRoutes = require('./routes/cart');
 const wishlistRoutes = require('./routes/wishlist');
+const orderRoutes = require('./routes/order');
 
 
 
@@ -53,7 +54,12 @@ app.use('/admin', isLogin,isAdmin, adminRoutes);
 app.use('/products', productsRoutes);
 app.use('/user', userRoutes);
 app.use('/cart', isLogin, cartRoutes);
+app.use('/orders', isLogin, orderRoutes);
 app.use('/wishlist', isLogin, wishlistRoutes);
+app.use((req, res) => {
+    res.status(404).render('pagenotfound');
+});
+
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

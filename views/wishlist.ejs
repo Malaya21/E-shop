@@ -1,134 +1,26 @@
 <% layout('layouts/boilerplate') %>
 
-<div class="container mx-auto px-4 py-12">
-    <div class="flex justify-between items-center mb-12">
-        <h1 class="text-4xl font-bold text-white">My Wishlist</h1>
-        <a href="/products" class="flex items-center text-blue-400 hover:text-blue-300 transition-colors">
-            <i class="fas fa-arrow-left mr-2"></i>
-            Continue Shopping
-        </a>
-    </div>
-    
-    <% if (wishlist && wishlist.products.length > 0) { %>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-            <% wishlist.products.forEach(product => { %>
-                <div class="bg-gray-800 rounded-xl shadow-lg overflow-hidden transform transition-all duration-300 hover:scale-105 hover:shadow-2xl">
-                    <div class="relative">
-                        <% if (product.productId.images && product.productId.images.length > 0) { %>
-                            <img src="<%= product.productId.images[0] %>" alt="<%= product.productId.name %>" class="w-full h-64 object-cover">
-                        <% } else { %>
-                            <div class="w-full h-64 bg-gray-700 flex items-center justify-center">
-                                <i class="fas fa-image text-gray-500 text-5xl"></i>
-                            </div>
-                        <% } %>
-                        <button onclick="removeFromWishlist('<%= product.productId._id %>')" 
-                                class="absolute top-4 right-4 bg-red-500 text-white p-2 rounded-full hover:bg-red-600 transition-colors">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
-                    <div class="p-6">
-                        <h3 class="text-xl font-semibold text-white mb-2"><%= product.productId.name %></h3>
-                        <p class="text-blue-400 text-lg font-medium mb-4">₹<%= product.productId.price %></p>
-                        <button onclick="addToCart('<%= product.productId._id %>')" 
-                                class="w-full bg-blue-500 text-white py-3 rounded-lg hover:bg-blue-600 transition-colors flex items-center justify-center">
-                            <i class="fas fa-shopping-cart mr-2"></i>
-                            Add to Cart
-                        </button>
-                    </div>
+<div class="container my-5">
+    <div class="row g-4">
+        <% wishlist.products.forEach((item) => { %>
+        <div class="col-md-3">
+            <div class="card h-100 shadow-sm">
+                <img src="<%= item.productId.image %>" alt="<%= item.productId.name %>" class="card-img-top" style="height: 200px; object-fit: cover;">
+                <div class="card-body d-flex flex-column justify-content-between">
+                    <h5 class="card-title"><%= item.productId.name %></h5>
+                    <p class="card-text text-primary fw-bold">Price: $<%= item.productId.price %></p>
                 </div>
-            <% }); %>
-        </div>
-    <% } else { %>
-        <div class="text-center py-20 bg-gray-800 rounded-2xl shadow-xl">
-            <div class="w-32 h-32 mx-auto mb-8 bg-blue-500 rounded-full flex items-center justify-center">
-                <i class="fas fa-heart text-white text-6xl"></i>
+                <form action="/cart" method="post">
+                    <input type="hidden" name="productId" value="<%= item.productId._id %>">
+                    <button type="submit" class="btn btn btn-outline-dark w-100 mb-2">
+                        <i class="fas fa-cart-plus"></i> Add to Cart
+                    </button>
+                </form>
+                <a href="/wishlist/remove/<%= item.productId._id %>" class="btn btn-outline-danger w-100">
+                    <i class="fas fa-heart-broken"></i> Remove from Wishlist
+                </a>
             </div>
-            <h2 class="text-3xl font-bold text-white mb-4">Your Wishlist is Empty</h2>
-            <p class="text-gray-400 text-lg mb-8">Start adding products to your wishlist to save them for later</p>
-            <a href="/products" class="inline-flex items-center px-8 py-4 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
-                <i class="fas fa-store mr-2"></i>
-                Browse Products
-            </a>
         </div>
-    <% } %>
+        <% }) %>
+    </div>
 </div>
-
-<script>
-    async function addToCart(productId) {
-        try {
-            const response = await fetch('/cart', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ productId })
-            });
-            
-            if (response.ok) {
-                // Show success toast
-                const toast = document.createElement('div');
-                toast.className = 'fixed bottom-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg transform transition-all duration-300 translate-y-0 opacity-100';
-                toast.innerHTML = `
-                    <div class="flex items-center">
-                        <i class="fas fa-check-circle mr-2"></i>
-                        <span>Product added to cart successfully!</span>
-                    </div>
-                `;
-                document.body.appendChild(toast);
-                
-                // Remove toast after 3 seconds
-                setTimeout(() => {
-                    toast.style.transform = 'translateY(100%)';
-                    toast.style.opacity = '0';
-                    setTimeout(() => toast.remove(), 300);
-                }, 3000);
-            } else {
-                throw new Error('Failed to add product to cart');
-            }
-        } catch (error) {
-            console.error('Error:', error);
-            // Show error toast
-            const toast = document.createElement('div');
-            toast.className = 'fixed bottom-4 right-4 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg';
-            toast.innerHTML = `
-                <div class="flex items-center">
-                    <i class="fas fa-exclamation-circle mr-2"></i>
-                    <span>${error.message}</span>
-                </div>
-            `;
-            document.body.appendChild(toast);
-            setTimeout(() => toast.remove(), 3000);
-        }
-    }
-
-    async function removeFromWishlist(productId) {
-        try {
-            const response = await fetch('/wishlist/remove', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ productId })
-            });
-            
-            if (response.ok) {
-                window.location.reload();
-            } else {
-                throw new Error('Failed to remove product from wishlist');
-            }
-        } catch (error) {
-            console.error('Error:', error);
-            // Show error toast
-            const toast = document.createElement('div');
-            toast.className = 'fixed bottom-4 right-4 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg';
-            toast.innerHTML = `
-                <div class="flex items-center">
-                    <i class="fas fa-exclamation-circle mr-2"></i>
-                    <span>${error.message}</span>
-                </div>
-            `;
-            document.body.appendChild(toast);
-            setTimeout(() => toast.remove(), 3000);
-        }
-    }
-</script> 

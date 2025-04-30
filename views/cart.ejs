@@ -1,6 +1,6 @@
 <% layout('layouts/boilerplate') %>
 
-<div class="container  my-5">
+<div class="container my-5">
   <h1 class="mb-4">Your Cart</h1>
 
   <% if (!cart || cart.products.length === 0) { %>
@@ -9,53 +9,58 @@
     </div>
   <% } else { %>
   
-    <table class="table table-bordered table-hover">
-      <thead class="thead-dark">
-        <tr>
-          <th ><span class="mx-5">Product</span></th>
-          <th>Price</th>
-          <th>Quantity</th>
-          <th>Subtotal</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% cart.products.forEach(product => { %>
+    <div class="table-responsive">
+      <table class="table table-bordered table-hover">
+        <thead class="thead-dark">
           <tr>
-            <td><img src="<%= product.productId.image%>" width="50" height="50" class="mx-3" alt=""><%= product.productId.name %></td>
-            <td>₹ <%= product.price %></td>
-            <td>
-              <div class="d-flex align-items-center">
-                <!-- Decrease quantity -->
-                <form action="/cart/decrease/<%= product.productId._id %>" method="POST" style="display:inline;">
-                  <button type="submit" class="btn btn-sm btn-warning">-</button>
-                </form>
-
-                <span class="mx-2"><%= product.quantity %></span>
-
-                <!-- Increase quantity -->
-                <form action="/cart/increase/<%= product.productId._id %>" method="POST" style="display:inline;">
-                  <button type="submit" class="btn btn-sm btn-success">+</button>
-                </form>
-              </div>
-            </td>
-            <td>₹ <%= product.price * product.quantity %></td>
-            <td>
-              <form action="/cart/remove/<%= product.productId._id %>" method="POST">
-                <button type="submit" class="btn btn-sm btn-danger">Remove</button>
-              </form>
-            </td>
+            <th class="text-center">Product</th>
+            <th class="text-center">Price</th>
+            <th class="text-center">Quantity</th>
+            <th class="text-center">Subtotal</th>
+            <th class="text-center">Action</th>
           </tr>
-        <% }) %>
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          <% cart.products.forEach(product => { %>
+            <tr>
+              <td class="align-middle">
+                <div class="d-flex align-items-center">
+                  <img src="<%= product.productId.image%>" width="50" height="50" class="img-fluid me-3" alt="<%= product.productId.name %>">
+                  <span class="d-none d-md-inline"><%= product.productId.name %></span>
+                </div>
+              </td>
+              <td class="align-middle text-center">₹ <%= product.price %></td>
+              <td class="align-middle">
+                <div class="d-flex justify-content-center align-items-center">
+                  <!-- Decrease quantity -->
+                  <form action="/cart/decrease/<%= product.productId._id %>" method="POST" class="d-inline">
+                    <button type="submit" class="btn btn-sm btn-warning">-</button>
+                  </form>
 
-    <div  style="text-align: right;">
+                  <span class="mx-2"><%= product.quantity %></span>
+
+                  <!-- Increase quantity -->
+                  <form action="/cart/increase/<%= product.productId._id %>" method="POST" class="d-inline">
+                    <button type="submit" class="btn btn-sm btn-success">+</button>
+                  </form>
+                </div>
+              </td>
+              <td class="align-middle text-center">₹ <%= product.price %></td>
+              <td class="align-middle text-center">
+                <form action="/cart/remove/<%= product.productId._id %>" method="POST">
+                  <button type="submit" class="btn btn-sm btn-danger">Remove</button>
+                </form>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="text-center text-md-end mt-4">
       <h4>Total Amount: ₹ <%= cart.totalAmount %></h4>
 
-      <form action="/cart/place-order" method="POST">
-        <button class="btn btn-primary mt-3 mx-5">Place Order</button>
-      </form>
+      <a href="/orders/payment" class="btn btn-primary mt-3 d-inline-block">Place Order</a>
     </div>
 
   <% } %>

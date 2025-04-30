@@ -76,7 +76,75 @@ router.get('/profile', (req, res) => {
     if (!user) {
         return res.redirect('/user/login');
     }
-    res.render('profile', { user });
+    res.render('profile', { user, messages: req.flash() });
 });
+
+// Update Profile Route
+router.post('/profile/update', async (req, res) => {
+    const user = req.session.user;
+    if (!user) {
+        return res.redirect('/user/login');
+    }
+
+    try {
+        const { name, phone, currentPassword, newPassword, address } = req.body;
+        const updateData = {
+            name,
+            phone,
+            address: Array.isArray(address) ? address : [address]
+        };
+
+        // If new password is provided, verify current password and update
+        if (newPassword) {
+            const existingUser = await User.findById(user._id);
+            if (existingUser.password !== currentPassword) {
+                req.flash('error', 'Current password is incorrect');
+                return res.redirect('/user/profile');
+            }
+            updateData.password = newPassword;
+        }
+
+        const updatedUser = await User.findByIdAndUpdate(
+            user._id,
+            updateData,
+            { new: true }
+        );
+
+        // Update session with new user data
+        req.session.user = updatedUser;
+        req.flash('success', 'Profile updated successfully');
+        res.redirect('/user/profile');
+    } catch (error) {
+        console.error('Error updating profile:', error);
+        req.flash('error', 'Error updating profile');
+        res.redirect('/user/profile');
+    }
+});
+router.post('/add-address', async (req, res) => {
+    const user = req.session.user;
+    if (!user) {
+        return res.redirect('/user/login');
+    }
+
+    try {
+        const { address } = req.body;
+        const updatedUser = await User.findByIdAndUpdate(
+            user._id,
+            { $push: { address: address } },
+            { new: true }
+        );
+
+        // Update session with new user data
+        req.session.user = updatedUser;
+        res.locals.address = updatedUser.address;
+        req.flash('success', 'Address added successfully');
+        res.redirect(req.get('referer'));
+    } catch (error) {
+        console.error('Error adding address:', error);
+        req.flash('error', 'Error adding address');
+        res.redirect(req.get('referer'));
+    }
+}
+);
 
 module.exports = router;

@@ -17,6 +17,24 @@ router.get('/', async(req, res) => {
         res.status(500).json({ error: error.message });
     }
 });
+router.get('/:id',async(req,res)=>{
+    const {id} = req.params;
+    try {
+        const product = await Product.findById(id);
+        if(!product){
+            req.flash('error','Product not found')
+            return res.redirect('/products')
+        }
+        const relatedProducts = await Product.find({ category: product.category }).limit(8);
+        res.render('product-details',{product, relatedProducts})
+    } catch (error) {
+        console.error(error)
+        req.flash('error','Internal Server Error')
+        res.redirect('/products')
+    }
+
+    
+})
 
 module.exports = router;
     

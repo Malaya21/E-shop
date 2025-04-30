@@ -1,0 +1,116 @@
+<% layout('layouts/boilerplate') %>
+
+<div class="container py-5">
+    <h2 class="mb-4 text-center">🧾 Secure Checkout</h2>
+
+    <!-- Address Section -->
+    
+    
+    <% if (!address || address.length === 0) { %>
+        <div class="card mb-4 shadow-sm rounded-3">
+            <div class="card-body">
+                <h5 class="card-title mb-3">Shipping Address</h5>
+                <div class="alert alert-warning">
+                    <strong>No address found!</strong> Please add your shipping address.
+                </div>
+
+                <!-- Add Address Inline -->
+                <form action="/user/add-address" method="POST" class="row g-3">
+                    <div class="col-12 col-md-10">
+                        <input type="text" name="address" class="form-control" placeholder="123 Main St, City, PIN" required>
+                    </div>
+                    <div class="col-12 col-md-2">
+                        <button type="submit" class="btn btn-secondary w-100">Add</button>
+                    </div>
+                </form>
+            
+            </div>
+        </div>
+        <% } %>
+    <!-- Total Amount Section -->
+    <div class="card mb-4 shadow-sm rounded-3" style="max-width: 500px; margin: auto;">
+        <div class="card-body d-flex justify-content-between align-items-center">
+            <span class="fw-bold fs-5">Total Payable:</span>
+            <span class="badge bg-success text-white fs-5 px-3 py-2 shadow-sm">₹<%= totalAmount %></span>
+        </div>
+    </div>
+
+    <!-- Payment Form -->
+    <div class="card shadow-sm rounded-3">
+        <div class="card-body">
+            <h5 class="card-title mb-4">Choose Payment Method</h5>
+            <form action="/orders" method="POST">
+                <% if ( address.length !== 0) {%>
+                    <select id="address" name="address" class="form-select mb-3" required>
+                        <option value="">Select Address</option>
+                        <% address.forEach((addr) => { %>
+                            <option value="<%= addr %>"><%= addr %></option>
+                        <% }) %>
+                    </select>
+               <% } %>
+                
+                    
+
+                <fieldset <%= !address || address.length === 0 ? 'disabled' : '' %>>
+                    <div class="mb-3">
+                        <label for="paymentMethod" class="form-label">Payment Method</label>
+                        <select id="paymentMethod" name="paymentMethod" class="form-select" required>
+                            <option value="">Select</option>
+                            <option value="cash">Cash</option>
+                            <option value="upi">UPI</option>
+                            <option value="credit">Credit Card</option>
+                            <option value="debit">Debit Card</option>
+                        </select>
+                    </div>
+
+                    <!-- Card Details -->
+                    <div id="cardDetails" class="mb-3" style="display: none;">
+                        <div class="mb-2">
+                            <label for="cardNumber" class="form-label">Card Number</label>
+                            <input type="text" id="cardNumber" name="cardNumber" class="form-control" placeholder="1234 5678 9012 3456">
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-2">
+                                <label for="expiry" class="form-label">Expiry Date</label>
+                                <input type="text" id="expiry" name="expiry" class="form-control" placeholder="MM/YY">
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <label for="cvv" class="form-label">CVV</label>
+                                <input type="password" id="cvv" name="cvv" class="form-control" placeholder="123">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- UPI Details -->
+                    <div id="upiDetails" class="mb-3" style="display: none;">
+                        <label for="upiId" class="form-label">UPI ID</label>
+                        <input type="text" id="upiId" name="upiId" class="form-control" placeholder="example@upi">
+                    </div>
+
+                    <!-- Amount -->
+                    <div class="mb-4">
+                        <label for="amount" class="form-label">Amount</label>
+                        <input type="number" id="amount" name="amount" class="form-control" value="<%= totalAmount %>" readonly>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 shadow-sm">💳 Pay Now</button>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Script for toggling inputs -->
+<script>
+    const paymentMethod = document.getElementById('paymentMethod');
+    const cardDetails = document.getElementById('cardDetails');
+    const upiDetails = document.getElementById('upiDetails');
+
+    if (paymentMethod) {
+        paymentMethod.addEventListener('change', function () {
+            const val = this.value;
+            cardDetails.style.display = (val === 'credit' || val === 'debit') ? 'block' : 'none';
+            upiDetails.style.display = (val === 'upi') ? 'block' : 'none';
+        });
+    }
+</script>

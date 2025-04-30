@@ -1,0 +1,88 @@
+<% layout('layouts/boilerplate') %>
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="text-center">Profile Details</h3>
+                </div>
+                <div class="card-body">
+                    <% if (messages.error) { %>
+                        <div class="alert alert-danger"><%= messages.error %></div>
+                    <% } %>
+                    <% if (messages.success) { %>
+                        <div class="alert alert-success"><%= messages.success %></div>
+                    <% } %>
+                    
+                    <form action="/user/profile/update" method="POST">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Full Name</label>
+                            <input type="text" class="form-control" id="name" name="name" value="<%= user.name %>" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" value="<%= user.email %>" readonly>
+                            <small class="text-muted">Email cannot be changed</small>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="phone" class="form-label">Phone Number</label>
+                            <input type="tel" class="form-control" id="phone" name="phone" value="<%= user.phone %>" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Addresses</label>
+                            <div id="addresses">
+                                <% if (user.address && user.address.length > 0) { %>
+                                    <% user.address.forEach((addr, index) => { %>
+                                        <div class="input-group mb-2">
+                                            <input type="text" class="form-control" name="address[]" value="<%= addr %>">
+                                            <button type="button" class="btn btn-danger" onclick="removeAddress(this)">Remove</button>
+                                        </div>
+                                    <% }); %>
+                                <% } %>
+                            </div>
+                            <button type="button" class="btn btn-secondary mt-2" onclick="addAddress()">Add New Address</button>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="currentPassword" class="form-label">Current Password</label>
+                            <input type="password" class="form-control" id="currentPassword" name="currentPassword">
+                            <small class="text-muted">Required only if changing password</small>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="newPassword" class="form-label">New Password</label>
+                            <input type="password" class="form-control" id="newPassword" name="newPassword">
+                            <small class="text-muted">Leave blank to keep current password</small>
+                        </div>
+                        
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary">Update Profile</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function addAddress() {
+    const addressesDiv = document.getElementById('addresses');
+    const newAddress = document.createElement('div');
+    newAddress.className = 'input-group mb-2';
+    newAddress.innerHTML = `
+        <input type="text" class="form-control" name="address[]" placeholder="Enter new address">
+        <button type="button" class="btn btn-danger" onclick="removeAddress(this)">Remove</button>
+    `;
+    addressesDiv.appendChild(newAddress);
+}
+
+function removeAddress(button) {
+    button.parentElement.remove();
+}
+</script>
+

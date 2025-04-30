@@ -19,14 +19,16 @@ const cartSchema = new Schema({
         },
         price:{
             type:Number,
-            required:true
+            required:true,
+            set: v => Math.round(v * 100) / 100 // only accept 2 decimal places
         },
        
     }],
     totalAmount:{
         type:Number,
         required:true,
-        default:0
+        default:0,
+        set: v => Math.round(v * 100) / 100 // only accept 2 decimal places
     },
     createdAt:{
         type:Date,
